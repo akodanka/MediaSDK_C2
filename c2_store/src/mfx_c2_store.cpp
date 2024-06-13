@@ -68,6 +68,7 @@ C2String MfxC2ComponentStore::getName() const
 
 c2_status_t MfxC2ComponentStore::createComponent(C2String name, std::shared_ptr<C2Component>* const component) {
 
+    ALOGI("ANOOB Iside createComponent");
     MFX_DEBUG_TRACE_FUNC;
 
     c2_status_t result = C2_OK;
@@ -99,30 +100,35 @@ c2_status_t MfxC2ComponentStore::createComponent(C2String name, std::shared_ptr<
                         reflector = m_reflector; // safe copy
                     }
 
+                        ALOGI("ANOOB creating mfx_component");
                     MfxC2Component* mfx_component = (*create_func)(name.c_str(), it->second.config_, std::move(reflector), &result);
                     if(result == C2_OK) {
                         void* dso_handle = dso.release(); // release handle to be captured into lambda deleter
                         auto component_deleter = [dso_handle] (MfxC2Component* p) { delete p; dlclose(dso_handle); };
                         *component = std::shared_ptr<MfxC2Component>(mfx_component, component_deleter);
-                    }
+                    } else
+                        ALOGE("ANOOB create_mfx failed for %s: %d", name.c_str(), result);
                 }
                 else {
                     MFX_LOG_ERROR("Module %s is invalid", it->second.dso_name_.c_str());
+                    ALOGE("Module %s is invalid", it->second.dso_name_.c_str());
                     result = C2_NOT_FOUND;
                 }
             }
             else {
                 MFX_LOG_ERROR("Cannot load module %s", it->second.dso_name_.c_str());
+                ALOGE("Cannot load module %s", it->second.dso_name_.c_str());
                 result = C2_NOT_FOUND;
             }
         }
         else {
             MFX_LOG_ERROR("Cannot find component %s", name.c_str());
+            ALOGE("Cannot find component %s", name.c_str());
             result = C2_NOT_FOUND;
         }
     }
     else {
-        MFX_LOG_ERROR("output component ptr is null");
+        ALOGE("output component ptr is null");
         result = C2_BAD_VALUE;
     }
 
