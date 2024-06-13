@@ -145,10 +145,10 @@ C2R MfxC2EncoderComponent::AVC_ProfileLevelSetter(bool mayBlock,
 C2R MfxC2EncoderComponent::AV1_ProfileLevelSetter(bool mayBlock, C2P<C2StreamProfileLevelInfo::output> &me) {
     (void)mayBlock;
     if (!me.F(me.v.profile).supportsAtAll(me.v.profile))
-        me.set().profile = PROFILE_HEVC_MAIN;
+        me.set().profile = PROFILE_AV1_0;
     if (!me.F(me.v.level).supportsAtAll(me.v.level))
-        me.set().level = LEVEL_HEVC_MAIN_5_1;
-    
+        me.set().level = LEVEL_AV1_7_3;
+
     return C2R::Ok();
 }
 C2R MfxC2EncoderComponent::HEVC_ProfileLevelSetter(bool mayBlock, C2P<C2StreamProfileLevelInfo::output> &me) {
@@ -386,7 +386,7 @@ MfxC2EncoderComponent::MfxC2EncoderComponent(const C2String name, const CreateCo
                         .oneOf({
                             PROFILE_AV1_0,
                             PROFILE_AV1_1,
-                            PROFILE_AV1_2,   
+                            PROFILE_AV1_2,
                         }),
                     C2F(m_profileLevel, C2ProfileLevelStruct::level)
                         .oneOf({
@@ -595,8 +595,8 @@ void MfxC2EncoderComponent::getMaxMinResolutionSupported(
 
     switch(m_encoderType) {
         case ENCODER_AV1: {
-            *min_w = 176;
-            *min_h = 144;
+            *min_w = 64;
+            *min_h = 64;
             *max_w = 4096;
             *max_h = 4096;
             break;
