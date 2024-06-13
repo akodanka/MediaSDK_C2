@@ -595,8 +595,8 @@ void MfxC2EncoderComponent::getMaxMinResolutionSupported(
 
     switch(m_encoderType) {
         case ENCODER_AV1: {
-            *min_w = 64;
-            *min_h = 64;
+            *min_w = 176;
+            *min_h = 144;
             *max_w = 4096;
             *max_h = 4096;
             break;
